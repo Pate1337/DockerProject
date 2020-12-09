@@ -1,0 +1,31 @@
+# This file is created in a script
+version: '3.7'
+services:
+  rs:
+    image: 'redis'
+    volumes:
+      - /var/cec/redis.rdb:/data/dump.rdb
+  lb:
+    build:
+      context: ../stage1/loadbalancer/
+      dockerfile: ./Dockerfile
+    ports:
+      - '7998:7999'
+    depends_on:
+      - rs
+  hs1:
+    build:
+      context: ../stage1/httpserver/
+      dockerfile: ./Dockerfile
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+    ports:
+      - '8000:8080'
+    depends_on:
+      - rs
+      - lb
+    environment:
+      - PORT=8080
+      - HOST=hs1

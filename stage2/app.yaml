@@ -1,0 +1,17 @@
+# This file is created in a script
+version: '3.7'
+services:
+  rs:
+    image: 'redis'
+    volumes:
+      - /var/cec/redis.rdb:/data/dump.rdb
+  hs:
+    image: 'hs_paavo'
+    ports:
+      - '8005:8080'
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+    depends_on:
+     - rs
